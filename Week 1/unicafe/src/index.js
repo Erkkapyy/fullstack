@@ -28,28 +28,49 @@ const Statistics = ({ good, neutral, bad }) => {
   }
 
   return (
-    <div>
+    <>
       <h1>statistiikka</h1>
-      <Display grade="Hyvä: " counter={good} />
-      <Display grade="Neutraali: " counter={neutral} />
-      <Display grade="Huono: " counter={bad} />
-      <Total good={good} neutral={neutral} bad={bad} />
-      <Average good={good} neutral={neutral} bad={bad} />
-      <Positive good={good} neutral={neutral} bad={bad} />
-    </div>
+      <table>
+        <tbody>
+          <tr>
+            <Display grade="Hyvä: " counter={good} />
+          </tr>
+
+          <tr>
+            <Display grade="Neutraali: " counter={neutral} />
+          </tr>
+
+          <tr>
+            <Display grade="Huono: " counter={bad} />
+          </tr>
+
+          <tr>
+            <Total good={good} neutral={neutral} bad={bad} />
+          </tr>
+
+          <tr>
+            <Average good={good} neutral={neutral} bad={bad} />
+          </tr>
+
+          <tr>
+            <Positive good={good} neutral={neutral} bad={bad} />
+          </tr>
+        </tbody>
+      </table>
+    </>
   )
 }
 
 const Positive = ({ good, neutral, bad }) => (
-  <div>positiivisia: {(good / (good + neutral + bad)) * 100}%</div>
+  <td>positiivisia: {(good / (good + neutral + bad)) * 100}%</td>
 )
 
 const Average = ({ good, neutral, bad }) => (
-  <div>keskiarvo: {(good + bad * -1) / (good + bad + neutral)}</div>
+  <td>keskiarvo: {(good + bad * -1) / (good + bad + neutral)}</td>
 )
 
 const Total = ({ good, neutral, bad }) => (
-  <div>yhteensä: {good + neutral + bad}</div>
+  <td>yhteensä: {good + neutral + bad}</td>
 )
 
 const Button = ({ handleClick, text }) => (
@@ -57,10 +78,10 @@ const Button = ({ handleClick, text }) => (
 )
 
 const Display = ({ grade, counter }) => (
-  <div>
+  <td>
     {grade}
     {counter}
-  </div>
+  </td>
 )
 
 ReactDOM.render(<App />, document.getElementById("root"))
