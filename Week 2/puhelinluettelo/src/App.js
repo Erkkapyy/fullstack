@@ -3,6 +3,7 @@ import axios from "axios"
 import PersonForm from "./components/PersonForm"
 import Persons from "./components/Persons"
 import Filter from "./components/Filter"
+import personService from "./services/Persons"
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -14,6 +15,8 @@ const App = () => {
   const [newName, setNewName] = useState("")
   const [newNumber, setNewNumber] = useState("")
   const [newShow, setNewShow] = useState("")
+  const [successMessage, setSuccessMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
   useEffect(() => {
     console.log("effect")
     axios.get("http://localhost:3001/persons").then(response => {
@@ -65,22 +68,91 @@ const App = () => {
     console.log(persons)
     console.log(persons.indexOf(uusi))
 
-    if (containsPerson() === true) {
-      window.alert(`${uusi.name}  on jo luettelossa`)
+    if (containsPerson()) {
+      if (
+        window.confirm(
+          `${uusi.name} on jo luettelossa, korvataanko vanha numero uudella?`
+        )
+      ) {
+        let newPerson = {}
+        persons.map(person => {
+          if (person.name === uusi.name) {
+            newPerson = {
+              name: person.name,
+              number: newNumber,
+              id: person.id
+            }
+          }
+          return newPerson
+        })
+        console.log("newPerson!!! ", newPerson.id)
+
+        personService
+          .update({ id: newPerson.id, newObject: newPerson })
+          .then(response => {
+            setPersons(
+              persons
+                .filter(person => person.id !== newPerson.id)
+                .concat(response.data)
+            )
+          })
+          .catch(error => {
+            if (!error) {
+              setSuccessMessage("Numero vaihdettu onnistuneesti")
+              setTimeout(() => {
+                setSuccessMessage(null)
+              }, 5000)
+            } else {
+              setErrorMessage(
+                `Henkilö '${newPerson.name}' oli jo poistettu palvelimelta`
+              )
+              setTimeout(() => {
+                setErrorMessage(null)
+              }, 5000)
+            }
+            setPersons(persons.filter(person => person.id !== newPerson.id))
+          })
+      }
     } else {
-      setPersons(persons.concat(uusi))
-      setNewName("")
-      setNewNumber("")
+      const personObject = {
+        name: newName,
+        number: newNumber,
+        id: persons.length + 1
+      }
+      personService.create(personObject).then(response => {
+        setPersons(persons.concat(response.data))
+        setNewName("")
+      })
+      setSuccessMessage("Henkilö lisätty onnistuneesti")
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
     }
 
     console.log(persons)
   }
 
+  const deletePerson = ({ id, name }) => {
+    console.log("nappi bainettu :D")
+    console.log("pärkkälä ", { name, id })
+
+    if (window.confirm(`Poistetaanko ${name}?`)) {
+      personService.delete(id)
+    }
+    const copy = persons.filter(person => person.id !== id)
+    setPersons(copy)
+    setSuccessMessage("Henkilö poistettu onnistuneesti")
+    setTimeout(() => {
+      setSuccessMessage(null)
+    }, 5000)
+  }
+
   return (
     <div>
       <h2>Puhelinluettelo</h2>
+      <Notification message={successMessage} />
+      <Error message={errorMessage} />
       <Filter handleShowChange={handleShowChange} />
-
       <h3>Lisää uusi</h3>
       <PersonForm
         addPerson={addPerson}
@@ -91,10 +163,26 @@ const App = () => {
       />
       <h2>Numerot</h2>
       <ul>
-        <Persons personsToShow={personsToShow} />
+        <Persons personsToShow={personsToShow} deletePerson={deletePerson} />
       </ul>
     </div>
   )
+}
+
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return <div className="success">{message}</div>
+}
+
+const Error = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return <div className="error">{message}</div>
 }
 
 export default App
