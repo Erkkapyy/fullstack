@@ -6,17 +6,22 @@
   "scripts": {
     "start": "node index.js",
     "watch": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --verbose"
   },
   "author": "Erkka Pyykönen",
   "license": "ISC",
   "devDependencies": {
+    "jest": "^24.0.0",
     "nodemon": "^1.18.9"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
+    "lodash": "^4.17.11",
     "mongoose": "^5.4.8"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
