@@ -1,0 +1,19 @@
+{
+  "name": "esimerkki",
+  "version": "1.0.0",
+  "description": "esim",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "watch": "nodemon index.js",
+    "test": "test"
+  },
+  "author": "Erkka Pyykönen",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.9"
+  }
+}

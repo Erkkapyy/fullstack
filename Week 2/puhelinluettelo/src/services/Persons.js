@@ -1,5 +1,5 @@
 import axios from "axios"
-const baseUrl = "http://localhost:3001/persons"
+const baseUrl = "/api/persons"
 
 const getAll = () => {
   return axios.get(baseUrl)
@@ -11,6 +11,7 @@ const create = newObject => {
 
 const update = ({ id, newObject }) => {
   return axios.put(`${baseUrl}/${id}`, newObject).catch(error => {
+    console.log("baseurl: ", baseUrl, " id: ", id, "newObject: ", newObject)
     console.log("fail boi")
   })
 }

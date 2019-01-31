@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react"
-import axios from "axios"
 import PersonForm from "./components/PersonForm"
 import Persons from "./components/Persons"
 import Filter from "./components/Filter"
@@ -19,8 +18,7 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   useEffect(() => {
     console.log("effect")
-    axios.get("http://localhost:3001/persons").then(response => {
-      console.log("promise fulfilled")
+    personService.getAll().then(response => {
       setPersons(response.data)
     })
   }, [])
@@ -119,14 +117,22 @@ const App = () => {
         number: newNumber,
         id: persons.length + 1
       }
-      personService.create(personObject).then(response => {
-        setPersons(persons.concat(response.data))
-        setNewName("")
-      })
-      setSuccessMessage("Henkilö lisätty onnistuneesti")
-      setTimeout(() => {
-        setSuccessMessage(null)
-      }, 5000)
+      personService
+        .create(personObject)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+          setNewName("")
+          setSuccessMessage(`${newName} lisätty`)
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
+        })
+        .catch(error => {
+          setErrorMessage(error.response.data)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
     }
 
     console.log(persons)
@@ -141,7 +147,7 @@ const App = () => {
     }
     const copy = persons.filter(person => person.id !== id)
     setPersons(copy)
-    setSuccessMessage("Henkilö poistettu onnistuneesti")
+    setSuccessMessage(`${name} poistettu`)
     setTimeout(() => {
       setSuccessMessage(null)
     }, 5000)
