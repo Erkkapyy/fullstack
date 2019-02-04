@@ -32,22 +32,21 @@ const mostBlogs = blogs => {
     return {}
   }
 
-  let array = blogs
-  array = _.orderBy(array, "author", "asc")
+  const array = _.orderBy(blogs, "author", "asc")
   console.log(array)
 
-  let lastAuthor = blogs[0].author
+  let latestAuthor = blogs[0].author
   let articleCount = 0
 
-  array.map(item => {
-    if (item.author === lastAuthor) {
+  array.forEach(item => {
+    if (item.author === latestAuthor) {
       articleCount++
       bestAuth = item
       if (articleCount > mostArticles) {
         mostArticles = articleCount
       }
     } else {
-      lastAuthor = item.author
+      latestAuthor = item.author
       articleCount = 1
     }
   })
@@ -63,14 +62,13 @@ const mostLikedAuthor = blogs => {
     return {}
   }
 
-  let array = blogs
-  array = _.orderBy(array, "author", "asc")
+  let array = _.orderBy(blogs, "author", "asc")
   console.log(array)
 
   let lastAuthor = blogs[0].author
   let likes = 0
 
-  array.map(item => {
+  array.forEach(item => {
     if (item.author === lastAuthor) {
       likes += item.likes
       bestAuth = item
