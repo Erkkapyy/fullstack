@@ -41,7 +41,6 @@ const App = () => {
       user: blog.user ? blog.user.id : null,
       id: blog.id
     }
-    console.log(blog.user)
     await blogService.update(blog.id, newObject)
     const updBlogs = await blogService.getAll()
     setBlogs(updBlogs)
